@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <span>Selecionar Voz</span>
+    <select name="" id="voiceList"></select><br><br>
+    <input type="text" name="" id="textinput">
+    <button id="btnspeak">fala</button>
+
+    <script>
+        var textinput = document.querySelector("#textinput")
+        var voiceList = document.querySelector("#voiceList")
+        var btnspeak = document.querySelector("#btnspeak")
+        var synth = window.speechSynthesis;
+        var voices = []
+
+        NewVoices()
+        if(speechSynthesis !== undefined)
+        {
+            speechSynthesis.onvoiceschanged = NewVoices
+        }
+
+        btnspeak.addEventListener('click',()=>{
+       
+            var tospeak = new SpeechSynthesisUtterance(textinput.value)
+       
+            var selectedVoiceName = voiceList.selectedOptions[0].value
+
+            voices.forEach((voice)=>{
+                if(voice.name === selectedVoiceName)
+                {
+                    tospeak.voice = voice
+                }
+
+            })
+            synth.speak(tospeak);
+        })
+
+        function NewVoices()
+        {
+            voices = synth.getVoices();
+            var selectedIndex = voiceList.selectedIndex < 0 ? 0 : voiceList.selectedIndex
+            voiceList.innerHTML = ""
+            voices.forEach((voice)=>{
+                var listItem = document.createElement('option')
+                listItem.textContent = voice.name
+                listItem.setAttribute('data-lang', voice.lang)
+                listItem.setAttribute('data-name',voice.name)
+                listItem.setAttribute('value',voice.name)
+                voiceList.appendChild(listItem)
+            })
+
+            voiceList.selectedIndex = selectedIndex
+        }
+    </script>
+
+    
+</body>
+</html>
